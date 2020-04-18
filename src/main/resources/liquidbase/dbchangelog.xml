@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet id="create Transactions table" author="mkudriavtsev" runOnChange="true">
+        <createTable tableName="Transactions">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated" type="timestamp">
+                <constraints nullable="true"/>
+            </column>
+            <column name="amount" type="numeric">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="create Accounts table" author="mkudriavtsev" runOnChange="true">
+        <createTable tableName="Accounts">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="balance" type="numeric">
+                <constraints nullable="true"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="create Accounts_Transactions table" author="mkudriavtsev" runOnChange="true">
+        <createTable tableName="Accounts_Transactions">
+            <column name="account_id" type="int"/>
+            <column name="transaction_id" type="int"/>
+        </createTable>
+        <addPrimaryKey tableName="Accounts_Transactions" columnNames="account_id,transaction_id"/>
+        <addForeignKeyConstraint baseTableName="Accounts_Transactions" baseColumnNames="account_id" constraintName="fk1_Accounts_Transactions"
+                                 referencedTableName="Accounts"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="Accounts_Transactions" baseColumnNames="transaction_id" constraintName="fk2_Accounts_Transactions"
+                                 referencedTableName="Transactions"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+    <changeSet id="create Customers table" author="mkudriavtsev" runOnChange="true">
+        <createTable tableName="Customers">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="firstName" type="varchar(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="lastName" type="varchar(30)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="account_id" type="int"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="Customers" baseColumnNames="account_id" constraintName="fk1_Customers"
+                                 referencedTableName="Accounts"
+                                 referencedColumnNames="id" onDelete="SET NULL" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>
